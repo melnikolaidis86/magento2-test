@@ -1,0 +1,22 @@
+{
+  "name": "elegento/module-instagram",
+  "description": "",
+  "type": "magento2-module",
+  "license": "proprietary",
+  "authors": [
+    {
+      "email": "info@elegento.com",
+      "name": "Elegento"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Elegento\\Instagram\\": ""
+    },
+    "files": [
+      "registration.php"
+    ]
+  }
+}
