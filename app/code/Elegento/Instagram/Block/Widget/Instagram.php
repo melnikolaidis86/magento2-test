@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Elegento\Instagram\Block\Widget;
 
 use Magento\Framework\View\Element\Template;
