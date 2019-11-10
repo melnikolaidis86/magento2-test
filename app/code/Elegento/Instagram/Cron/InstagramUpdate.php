@@ -11,11 +11,11 @@ class InstagramUpdate
      * Constructor
      *
      * @param \Psr\Log\LoggerInterface $logger
-     * @param \Elegento\Instagram\Helper\InstagramData $instagramHelper
+     * @param \Elegento\Instagram\Helper\Instagram $instagramHelper
      */
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
-        \Elegento\Instagram\Helper\InstagramData $instagramHelper
+        \Elegento\Instagram\Helper\Instagram $instagramHelper
     ){
         $this->logger = $logger;
         $this->instagramHelper = $instagramHelper;

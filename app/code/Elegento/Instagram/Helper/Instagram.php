@@ -3,7 +3,7 @@
 namespace Elegento\Instagram\Helper;
 
 
-class InstagramData extends \Magento\Framework\App\Helper\AbstractHelper
+class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
 {
     const ACCESS_TOKEN = '1162125356.5655338.01348c85eab447f6af3070b8c225b900';
     const IMAGE_COUNT = '8';
