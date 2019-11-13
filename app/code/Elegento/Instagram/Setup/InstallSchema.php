@@ -41,27 +41,35 @@ class InstallSchema implements InstallSchemaInterface
         )->addColumn(
             InstagramInterface::POST_ID,
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            null,
+            255,
             ['nullable' => false],
             'POST ID'
         )->addColumn(
             InstagramInterface::IMAGE_URL,
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            null,
+            255,
             ['nullable' => false],
             'INSTAGRAM URL'
         )->addColumn(
             InstagramInterface::POST_LINK,
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            null,
+            255,
             [],
             'POST LINK'
         )->addColumn(
             InstagramInterface::CAPTION,
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            null,
+            '64k',
             [],
             'CAPTION'
+        )->addIndex(
+            $setup->getIdxName(
+                $setup->getTable(InstagramInterface::TABLE_NAME),
+                [InstagramInterface::POST_ID],
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            [InstagramInterface::POST_ID],
+            ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
         )->addIndex(
             $setup->getIdxName(
                 $setup->getTable(InstagramInterface::TABLE_NAME),

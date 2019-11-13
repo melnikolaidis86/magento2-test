@@ -12,6 +12,7 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
     protected $jsonHelper;
     protected $instagramFactory;
     protected $instagramRepository;
+    protected $instagramCollectionFactory;
 
     /**
      * Instagram constructor.
@@ -20,19 +21,22 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
      * @param \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory
      * @param \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository
+     * @param \Elegento\Instagram\Model\ResourceModel\Instagram\CollectionFactory $instagramCollectionFactory
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\HTTP\Client\Curl $curl,
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory,
-        \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository
+        \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository,
+        \Elegento\Instagram\Model\ResourceModel\Instagram\CollectionFactory $instagramCollectionFactory
     ){
         parent::__construct($context);
         $this->curl = $curl;
         $this->jsonHelper = $jsonHelper;
         $this->instagramFactory = $instagramFactory;
         $this->instagramRepository = $instagramRepository;
+        $this->instagramCollectionFactory = $instagramCollectionFactory;
     }
 
     /**
@@ -67,8 +71,21 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function updateFeed()
     {
-        $instagramData = $this->getLatestMedia();
+        $instagramData = $this->getLatestMedia(); //Fetch fresh data from instagram
+        $postIds = array();
+
+        /** @var \Elegento\Instagram\Model\ResourceModel\Instagram\Collection $instagramCollection */
+        $instagramCollection = $this->instagramCollectionFactory->create();
+
+        foreach ($instagramCollection as $data) {
+            $postIds[] = $data->getPostId(); //Retrieve already saved post ids
+        }
+
         foreach ($instagramData as $post) {
+
+            if(in_array($post['id'], $postIds)) {
+                continue; //If already in database continue
+            }
 
             /** @var \Elegento\Instagram\Api\Data\InstagramInterface $instagramItem */
             $instagramItem = $this->instagramFactory->create();

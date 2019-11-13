@@ -28,11 +28,11 @@ class InstagramUpdate
      */
     public function execute()
     {
-        //$this->logger->addInfo("Cronjob InstagramUpdate is executed.");
-
-        //var_dump($this->instagramHelper->getLatestMedia());
+        $this->logger->addInfo("Cronjob InstagramUpdate is executed.");
 
         $this->instagramHelper->updateFeed();
+
+        $this->logger->addInfo("Cronjob InstagramUpdate has been completed.");
 
     }
 }
