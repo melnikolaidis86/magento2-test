@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Elegento\Instagram\Api\InstagramRepositoryInterface" type="Elegento\Instagram\Model\InstagramRepository"/>
+    <preference for="Elegento\Instagram\Api\Data\InstagramInterface" type="Elegento\Instagram\Model\Data\Instagram"/>
+    <preference for="Elegento\Instagram\Api\Data\InstagramSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+</config>

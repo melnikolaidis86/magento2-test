@@ -30,6 +30,9 @@ class InstagramUpdate
     {
         //$this->logger->addInfo("Cronjob InstagramUpdate is executed.");
 
-        var_dump($this->instagramHelper->getLatestMedia());
+        //var_dump($this->instagramHelper->getLatestMedia());
+
+        $this->instagramHelper->updateFeed();
+
     }
 }

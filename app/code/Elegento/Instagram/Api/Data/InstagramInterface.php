@@ -6,11 +6,25 @@ use Magento\Framework\Api\ExtensibleDataInterface;
 
 interface InstagramInterface extends ExtensibleDataInterface
 {
+    const INSTAGRAM_ID = 'instagram_id';
     const POST_ID = 'post_id';
     const IMAGE_URL = 'image_url';
     const POST_LINK = 'post_link';
     const CAPTION = 'caption';
     const TABLE_NAME = 'elegento_instagram_feed';
+
+    /**
+     * Get instagram_id
+     * @return string|null
+     */
+    public function getInstagramId();
+
+    /**
+     * Set instagram_id
+     * @param string $instagramId
+     * @return \Elegento\Instagram\Api\Data\InstagramInterface
+     */
+    public function setInstagramId($instagramId);
 
     /**
      * Get post_id
@@ -64,4 +78,19 @@ interface InstagramInterface extends ExtensibleDataInterface
      * @return InstagramInterface
      */
     public function setCaption($caption);
+
+    /**
+     * Retrieve existing extension attributes object or create a new one.
+     * @return \Elegento\Instagram\Api\Data\InstagramExtensionInterface|null
+     */
+    public function getExtensionAttributes();
+
+    /**
+     * Set an extension attributes object.
+     * @param \Elegento\Instagram\Api\Data\InstagramExtensionInterface $extensionAttributes
+     * @return InstagramInterface
+     */
+    public function setExtensionAttributes(
+        \Elegento\Instagram\Api\Data\InstagramExtensionInterface $extensionAttributes
+    );
 }

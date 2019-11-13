@@ -10,21 +10,29 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected $curl;
     protected $jsonHelper;
+    protected $instagramFactory;
+    protected $instagramRepository;
 
     /**
-     * Data constructor.
+     * Instagram constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Framework\HTTP\Client\Curl $curl
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
+     * @param \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory
+     * @param \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\HTTP\Client\Curl $curl,
-        \Magento\Framework\Json\Helper\Data $jsonHelper
+        \Magento\Framework\Json\Helper\Data $jsonHelper,
+        \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory,
+        \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository
     ){
         parent::__construct($context);
         $this->curl = $curl;
         $this->jsonHelper = $jsonHelper;
+        $this->instagramFactory = $instagramFactory;
+        $this->instagramRepository = $instagramRepository;
     }
 
     /**
@@ -51,5 +59,26 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
         $response = $this->jsonHelper->jsonDecode($data);
 
         return $response['data'];
+    }
+
+    /**
+     * Save Instagram data to database
+     *
+     */
+    public function updateFeed()
+    {
+        $instagramData = $this->getLatestMedia();
+        foreach ($instagramData as $post) {
+
+            /** @var \Elegento\Instagram\Api\Data\InstagramInterface $instagramItem */
+            $instagramItem = $this->instagramFactory->create();
+
+            $instagramItem->setPostId($post['id']);
+            $instagramItem->setImageUrl($post['images']['low_resolution']['url']);
+            $instagramItem->setPostLink($post['link']);
+            $instagramItem->setCaption($post['caption']['text']);
+
+            $this->instagramRepository->save($instagramItem);
+        }
     }
 }

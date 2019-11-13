@@ -33,10 +33,16 @@ class InstallSchema implements InstallSchemaInterface
         $table = $setup->getConnection()->newTable(
             $setup->getTable(InstagramInterface::TABLE_NAME)
         )->addColumn(
-            InstagramInterface::POST_ID,
+            InstagramInterface::INSTAGRAM_ID,
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             null,
-            ['nullable' => false, 'primary' => true],
+            ['identity' => true, 'nullable' => false, 'primary' => true],
+            'Page ID'
+        )->addColumn(
+            InstagramInterface::POST_ID,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            null,
+            ['nullable' => false],
             'POST ID'
         )->addColumn(
             InstagramInterface::IMAGE_URL,
