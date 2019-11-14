@@ -5,16 +5,12 @@
 
 <?php if($block->getData('title')): ?>
     <div id="instagram-slider">
-        <h2>
-            <a target="blank" href="<?= $block->escapeUrl('https://www.instagram.com/' . $block->getAccountName()) ?>">
-                <?= $block->escapeHtml($block->getAccountName()) ?>
-            </a>
-        </h2>
+        <h2><?= $block->escapeHtml($block->getData('title')) ?></h2>
         <div  class="slick-instagram-slider">
-            <?php foreach ($block->getInstagramData() as $post) : ?>
+            <?php foreach ($block->getInstagramCollection() as $item) : ?>
                 <div class="item">
-                    <a target="_blank" href="<?= $block->escapeUrl($post['link']) ?>">
-                        <img src="<?= $block->escapeUrl($post['image_src']) ?>" alt="<?= $block->escapeHtmlAttr($post['caption']) ?>"/>
+                    <a target="_blank" href="<?= $block->escapeUrl($item->getPostLink()) ?>">
+                        <img src="<?= $block->escapeUrl($item->getUploadedImageUrl() ?: $item->getImageUrl()) ?>" alt="<?= $block->escapeHtmlAttr($item->getPostCaption()) ?>"/>
                     </a>
                 </div>
             <?php endforeach; ?>
@@ -32,8 +28,8 @@
 
         $(".slick-instagram-slider").slick(
             {
-                dots: <?= $block->escapeJsQuote($helper->slickDots()) ?>,
-                arrows: <?= $block->escapeJsQuote($helper->slickArrows()) ?>,
+                dots: <?= $block->escapeJs($helper->slickDots()) ?>,
+                arrows: <?= $block->escapeJs($helper->slickArrows()) ?>,
                 infinite: true,
                 speed: 1000,
                 slidesToShow: 6,
