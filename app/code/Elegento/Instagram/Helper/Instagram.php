@@ -13,6 +13,7 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
     protected $instagramFactory;
     protected $instagramRepository;
     protected $instagramCollectionFactory;
+    protected $dateTime;
 
     /**
      * Instagram constructor.
@@ -22,6 +23,7 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory
      * @param \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository
      * @param \Elegento\Instagram\Model\ResourceModel\Instagram\CollectionFactory $instagramCollectionFactory
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -29,7 +31,8 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Elegento\Instagram\Api\Data\InstagramInterfaceFactory $instagramFactory,
         \Elegento\Instagram\Api\InstagramRepositoryInterface $instagramRepository,
-        \Elegento\Instagram\Model\ResourceModel\Instagram\CollectionFactory $instagramCollectionFactory
+        \Elegento\Instagram\Model\ResourceModel\Instagram\CollectionFactory $instagramCollectionFactory,
+        \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
     ){
         parent::__construct($context);
         $this->curl = $curl;
@@ -37,6 +40,7 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
         $this->instagramFactory = $instagramFactory;
         $this->instagramRepository = $instagramRepository;
         $this->instagramCollectionFactory = $instagramCollectionFactory;
+        $this->dateTime = $dateTime;
     }
 
     /**
@@ -93,11 +97,57 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
             $imageUrl = $instagramItem->saveImageLocal($post['images']['low_resolution']['url']); //save image to local folder
 
             $instagramItem->setPostId($post['id']);
-            $instagramItem->setImageUrl($imageUrl);
+            $instagramItem->setImageUrl($post['images']['low_resolution']['url']);
+            $instagramItem->setUploadedImageUrl($imageUrl);
+            $instagramItem->setLikes($post['likes']['count']);
+            $instagramItem->setTags(implode(',', $post['tags']));
             $instagramItem->setPostLink($post['link']);
             $instagramItem->setCaption($post['caption']['text']);
+            $instagramItem->setCreatedAt($this->dateTime->date(null, $post['created_time']));
 
             $this->instagramRepository->save($instagramItem);
+        }
+    }
+
+    /**
+     * Remove uploaded images for unused posts
+     *
+     */
+    public function removeUnusedImages()
+    {
+        /** @var \Elegento\Instagram\Model\ResourceModel\Instagram\Collection $instagramCollection */
+        $instagramCollection = $this->instagramCollectionFactory->create();
+
+        $instagramCollection->setPageSize(self::IMAGE_COUNT) // only get images that is going to be displayed
+            ->setCurPage(1);
+
+        $postIds = array(); //Store in array all images that is going to be displayed
+        foreach ($instagramCollection as $item) {
+            $postIds[] = $item->getPostId();
+        }
+
+        /** @var \Elegento\Instagram\Model\ResourceModel\Instagram\Collection $instagramCollection */
+        $instagramCollection = $this->instagramCollectionFactory->create(); //create new collection with all images
+
+        foreach ($instagramCollection as $item) {
+
+            if(in_array($item->getPostId(), $postIds)) {
+                continue;
+            }
+
+            /** @var \Elegento\Instagram\Api\Data\InstagramInterface $instagramItem */
+            $instagramItem = $this->instagramFactory->create();
+
+            try {
+
+                //Remove local image set null to table
+                if($instagramItem->removeImageLocal($item->getUploadedImageUrl())) {
+                    $item->setUploadedImageUrl(null);
+                    $item->save();
+                }
+            } catch (\Magento\Framework\Exception\FileSystemException $exception) {
+                $exception->getMessage();
+            }
         }
     }
 }

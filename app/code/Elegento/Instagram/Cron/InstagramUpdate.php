@@ -4,7 +4,14 @@ namespace Elegento\Instagram\Cron;
 class InstagramUpdate
 {
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var \Elegento\Instagram\Helper\Instagram
+     */
     protected $instagramHelper;
 
     /**
@@ -30,7 +37,9 @@ class InstagramUpdate
     {
         $this->logger->addInfo("Cronjob InstagramUpdate is executed.");
 
-        $this->instagramHelper->updateFeed();
+        $this->instagramHelper->updateFeed(); //Update Feed
+
+        $this->instagramHelper->removeUnusedImages(); //Remove local image url for unused images
 
         $this->logger->addInfo("Cronjob InstagramUpdate has been completed.");
 

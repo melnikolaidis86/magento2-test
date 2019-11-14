@@ -9,8 +9,12 @@ interface InstagramInterface extends ExtensibleDataInterface
     const INSTAGRAM_ID = 'instagram_id';
     const POST_ID = 'post_id';
     const IMAGE_URL = 'image_url';
+    const UPLOADED_IMAGE_URL = 'uploaded_image_url';
     const POST_LINK = 'post_link';
     const CAPTION = 'caption';
+    const TAGS = 'tags';
+    const LIKES = 'likes';
+    const CREATED_AT = 'created_at';
     const TABLE_NAME = 'elegento_instagram_feed';
     const FOLDER_NAME = 'instagram';
 
@@ -54,6 +58,19 @@ interface InstagramInterface extends ExtensibleDataInterface
     public function setImageUrl($imageUrl);
 
     /**
+     * Get uploaded_image_url
+     * @return string|null
+     */
+    public function getUploadedImageUrl();
+
+    /**
+     * Set uploaded_image_url
+     * @param string $imageUrl
+     * @return InstagramInterface
+     */
+    public function setUploadedImageUrl($imageUrl);
+
+    /**
      * Get post_link
      * @return string|null
      */
@@ -81,6 +98,45 @@ interface InstagramInterface extends ExtensibleDataInterface
     public function setCaption($caption);
 
     /**
+     * Get tags
+     * @return string|null
+     */
+    public function getTags();
+
+    /**
+     * Set tags
+     * @param string $tags
+     * @return InstagramInterface
+     */
+    public function setTags($tags);
+
+    /**
+     * Get likes
+     * @return string|null
+     */
+    public function getLikes();
+
+    /**
+     * Set likes
+     * @param string $likes
+     * @return InstagramInterface
+     */
+    public function setLikes($likes);
+
+    /**
+     * Get created_at
+     * @return string|null
+     */
+    public function getCreatedAt();
+
+    /**
+     * Set created_at
+     * @param string $createdAt
+     * @return InstagramInterface
+     */
+    public function setCreatedAt($createdAt);
+
+    /**
      * Retrieve existing extension attributes object or create a new one.
      * @return \Elegento\Instagram\Api\Data\InstagramExtensionInterface|null
      */
@@ -97,7 +153,16 @@ interface InstagramInterface extends ExtensibleDataInterface
 
     /**
      * @param $imageUrl
-     * @return string|bool
+     * @return bool|string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function saveImageLocal($imageUrl);
+
+    /**
+     * @param $imageUrl
+     * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    public function removeImageLocal($imageUrl);
 }

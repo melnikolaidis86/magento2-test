@@ -106,6 +106,25 @@ class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implemen
     }
 
     /**
+     * Get uploaded_image_url
+     * @return string|null
+     */
+    public function getUploadedImageUrl()
+    {
+        return $this->_get(self::UPLOADED_IMAGE_URL);
+    }
+
+    /**
+     * Set uploaded_image_url
+     * @param string $imageUrl
+     * @return InstagramInterface
+     */
+    public function setUploadedImageUrl($imageUrl)
+    {
+        return $this->setData(self::UPLOADED_IMAGE_URL, $imageUrl);
+    }
+
+    /**
      * Get post_link
      * @return string|null
      */
@@ -144,6 +163,63 @@ class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implemen
     }
 
     /**
+     * Get tags
+     * @return string|null
+     */
+    public function getTags()
+    {
+        return $this->_get(self::TAGS);
+    }
+
+    /**
+     * Set tags
+     * @param string $tags
+     * @return InstagramInterface
+     */
+    public function setTags($tags)
+    {
+        return $this->setData(self::TAGS, $tags);
+    }
+
+    /**
+     * Get likes
+     * @return string|null
+     */
+    public function getLikes()
+    {
+        return $this->_get(self::LIKES);
+    }
+
+    /**
+     * Set likes
+     * @param string $likes
+     * @return InstagramInterface
+     */
+    public function setLikes($likes)
+    {
+        return $this->setData(self::LIKES, $likes);
+    }
+
+    /**
+     * Get created_at
+     * @return string|null
+     */
+    public function getCreatedAt()
+    {
+        return $this->_get(self::CREATED_AT);
+    }
+
+    /**
+     * Set created_at
+     * @param string $createdAt
+     * @return InstagramInterface
+     */
+    public function setCreatedAt($createdAt)
+    {
+        return $this->setData(self::CREATED_AT, $createdAt);
+    }
+
+    /**
      * Retrieve existing extension attributes object or create a new one.
      * @return \Elegento\Instagram\Api\Data\InstagramExtensionInterface|null
      */
@@ -165,7 +241,9 @@ class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implemen
 
     /**
      * @param $imageUrl
-     * @return string|bool
+     * @return bool|string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     public function saveImageLocal($imageUrl)
     {
@@ -183,11 +261,24 @@ class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implemen
         return false;
     }
 
+
     /**
-     * Media directory name for the temporary file storage
-     * pub/media/instagram
-     *
+     * @param $imageUrl
+     * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    public function removeImageLocal($imageUrl)
+    {
+        $dir = $this->getMediaDir();
+        $imageName = $dir . DIRECTORY_SEPARATOR . baseName($imageUrl);
+        $result = $this->file->rm($imageName);
+
+        return $result;
+    }
+
+    /**
      * @return string
+     * @throws \Magento\Framework\Exception\FileSystemException
      */
     private function getMediaDir()
     {

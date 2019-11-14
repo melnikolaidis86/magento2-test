@@ -27,6 +27,7 @@ class InstallSchema implements InstallSchemaInterface
 
     /**
      * @param SchemaSetupInterface $setup
+     * @throws \Zend_Db_Exception
      */
     protected function createInstagramTable(SchemaSetupInterface $setup)
     {
@@ -49,7 +50,13 @@ class InstallSchema implements InstallSchemaInterface
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => false],
-            'INSTAGRAM URL'
+            'INSTAGRAM IMAGE URL'
+        )->addColumn(
+            InstagramInterface::UPLOADED_IMAGE_URL,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'UPLOADED IMAGE URL'
         )->addColumn(
             InstagramInterface::POST_LINK,
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
@@ -62,21 +69,39 @@ class InstallSchema implements InstallSchemaInterface
             '64k',
             [],
             'CAPTION'
+        )->addColumn(
+            InstagramInterface::TAGS,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            [],
+            'TAGS'
+        )->addColumn(
+            InstagramInterface::LIKES,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            [],
+            'TAGS'
+        )->addColumn(
+            InstagramInterface::CREATED_AT,
+            \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+            null,
+            ['nullable' => false],
+            'CREATED AT'
         )->addIndex(
             $setup->getIdxName(
                 $setup->getTable(InstagramInterface::TABLE_NAME),
-                [InstagramInterface::POST_ID],
+                [InstagramInterface::POST_ID, InstagramInterface::TAGS],
                 AdapterInterface::INDEX_TYPE_UNIQUE
             ),
-            [InstagramInterface::POST_ID],
+            [InstagramInterface::POST_ID, InstagramInterface::TAGS],
             ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
         )->addIndex(
             $setup->getIdxName(
                 $setup->getTable(InstagramInterface::TABLE_NAME),
-                [InstagramInterface::IMAGE_URL, InstagramInterface::POST_LINK],
+                [InstagramInterface::UPLOADED_IMAGE_URL],
                 AdapterInterface::INDEX_TYPE_FULLTEXT
             ),
-            [InstagramInterface::IMAGE_URL, InstagramInterface::POST_LINK],
+            [InstagramInterface::UPLOADED_IMAGE_URL],
             ['type' => AdapterInterface::INDEX_TYPE_FULLTEXT]
         )->setComment(
             'Instagram Data Feed table'
