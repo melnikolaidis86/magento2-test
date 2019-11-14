@@ -12,6 +12,7 @@ interface InstagramInterface extends ExtensibleDataInterface
     const POST_LINK = 'post_link';
     const CAPTION = 'caption';
     const TABLE_NAME = 'elegento_instagram_feed';
+    const FOLDER_NAME = 'instagram';
 
     /**
      * Get instagram_id
@@ -93,4 +94,10 @@ interface InstagramInterface extends ExtensibleDataInterface
     public function setExtensionAttributes(
         \Elegento\Instagram\Api\Data\InstagramExtensionInterface $extensionAttributes
     );
+
+    /**
+     * @param $imageUrl
+     * @return string|bool
+     */
+    public function saveImageLocal($imageUrl);
 }

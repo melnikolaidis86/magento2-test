@@ -3,9 +3,50 @@
 namespace Elegento\Instagram\Model\Data;
 
 use Elegento\Instagram\Api\Data\InstagramInterface;
+use Magento\Framework\Api\ExtensionAttributesFactory;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\UrlInterface;
 
 class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implements InstagramInterface
 {
+    /**
+     * @var DirectoryList
+     */
+    protected $directoryList;
+
+    /**
+     * @var \Magento\Framework\Filesystem\Io\File
+     */
+    protected $file;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $storeManager;
+
+
+    /**
+     * Instagram constructor.
+     * @param ExtensionAttributesFactory $extensionFactory
+     * @param \Magento\Framework\Api\AttributeValueFactory $attributeValueFactory
+     * @param DirectoryList $directoryList
+     * @param \Magento\Framework\Filesystem\Io\File $file
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param array $data
+     */
+    public function __construct(
+        ExtensionAttributesFactory $extensionFactory,
+        \Magento\Framework\Api\AttributeValueFactory $attributeValueFactory,
+        DirectoryList $directoryList,
+        \Magento\Framework\Filesystem\Io\File $file,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        array $data = []
+    ){
+        parent::__construct($extensionFactory, $attributeValueFactory, $data);
+        $this->directoryList = $directoryList;
+        $this->file = $file;
+        $this->storeManager = $storeManager;
+    }
 
     /**
      * Get instagram_id
@@ -120,5 +161,36 @@ class Instagram extends \Magento\Framework\Api\AbstractExtensibleObject implemen
         \Elegento\Instagram\Api\Data\InstagramExtensionInterface $extensionAttributes
     ) {
         return $this->_setExtensionAttributes($extensionAttributes);
+    }
+
+    /**
+     * @param $imageUrl
+     * @return string|bool
+     */
+    public function saveImageLocal($imageUrl)
+    {
+        $dir = $this->getMediaDir();
+        $this->file->checkAndCreateFolder($dir);
+        $imageName = explode('?', baseName($imageUrl));
+        $newFileName = $dir . DIRECTORY_SEPARATOR . $imageName[0];
+
+        /** read file from URL and copy it to the new destination */
+        $result = $this->file->read($imageUrl, $newFileName);
+        if($result) {
+            return $this->storeManager->getStore()->getUrl('pub/media') . self::FOLDER_NAME . DIRECTORY_SEPARATOR . $imageName[0];
+        }
+
+        return false;
+    }
+
+    /**
+     * Media directory name for the temporary file storage
+     * pub/media/instagram
+     *
+     * @return string
+     */
+    private function getMediaDir()
+    {
+        return $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::FOLDER_NAME;
     }
 }

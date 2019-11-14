@@ -90,8 +90,10 @@ class Instagram extends \Magento\Framework\App\Helper\AbstractHelper
             /** @var \Elegento\Instagram\Api\Data\InstagramInterface $instagramItem */
             $instagramItem = $this->instagramFactory->create();
 
+            $imageUrl = $instagramItem->saveImageLocal($post['images']['low_resolution']['url']); //save image to local folder
+
             $instagramItem->setPostId($post['id']);
-            $instagramItem->setImageUrl($post['images']['low_resolution']['url']);
+            $instagramItem->setImageUrl($imageUrl);
             $instagramItem->setPostLink($post['link']);
             $instagramItem->setCaption($post['caption']['text']);
 
